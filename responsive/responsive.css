@@ -17,7 +17,7 @@
     .garfield {width:200px; height:133px; background:url(garfield.gif) 0 -265px;}}
 
 @media screen and (min-width: 600px) and (max-width: 700px){ /* 7 FIX */
-    .garfield {width:200px; height:133px; background:url(garfield.gif) -200px -265px:}}
+    .garfield {width:200px; height:133px; background:url(garfield.gif) -200px -265px;}}
 
 @media screen and (max-width: 600px) { /* 8 */
     .garfield {width:200px; height:133px; background:url(garfield.gif) -400px -265px;}}
