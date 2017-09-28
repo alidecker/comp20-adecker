@@ -1,17 +1,17 @@
-@media screen and (min-width: 1200px) /*and (-webkit-min-device-pixel-ratio: 2) and (min-resolution: 192dpi)*/ {
+@media screen and (min-width: 1200px) {
     .garfield {width:400px; height:133px; background:url(garfield.gif) 0 0px;}
 }
 
-@media screen and (min-width: 1100px) and (max-width: 1200px) /*and (-webkit-min-device-pixel-ratio: 2) and (min-resolution: 192dpi)*/ {
-    .garfield {width:200px; height:133px; background:url(garfield.gif) 0 600px;}
+@media screen and (min-width: 1100px) and (max-width: 1200px) {
+    .garfield {width:200px; height:133px; background:url(garfield.gif) 200px 0;}
 }
 
-@media screen and (min-width: 1000px) and (max-width: 1100px) /*and (-webkit-min-device-pixel-ratio: 2) and (min-resolution: 192dpi)*/ {
-    .garfield {width:200px; height:133px; background:url(garfield.gif) -132 0px;}
+@media screen and (min-width: 1000px) and (max-width: 1100px){
+    .garfield {width:200px; height:133px; background:url(garfield.gif) 0 -132px;}
 }
 
 
 
 @media screen and (max-width: 600px) {
-    .garfield {width:200px; height:133px; background:url(garfield.gif) -266 0px;}
+    .garfield {width:200px; height:133px; background:url(garfield.gif) 266 -266px;}
 }
