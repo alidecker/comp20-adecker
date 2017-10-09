@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>A Classic</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+<h1 id="title">A Classic</h1>
+
+<video src="https://www.cs.tufts.edu/comp/20/classic.mp4" id="a_classic" controls></video>
+<div id="lyrics"></div>
+
+<script>
+
+var video = document.getElementById("a_classic");
+var caption = document.getElementById("lyrics");
+
+video.addEventListener("timeupdate", function() {
+  console.log("Hello i love you");
+  if (video.currentTime < 10) {
+    caption.innerHTML = "Hush Hush Hush Here Comes the Bogeyman";
+  }
+  else if (video.currentTime > 10 && video.currentTime < 13) {
+    caption.innerHTML = "Children have You ever met the Bogeyman before
+No, of course You haven't for You're much too good, I'm sure;
+Don't You be afraid of him if he should visit You,
+He's a great big coward, so I'll tell You what to do";
+  }
+});
+			  
+  
+</script>
+</body>
+</html>	
