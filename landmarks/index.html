@@ -6,9 +6,15 @@
     <meta charset="utf-8" />
     <title>Landmark Locator</title>
     <link rel="stylesheet" href="landmarkstyle.css" type="text/css" />
+    <script>
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = position.coords;
+      });
+
+    </script>
   </head>
 
   <body>
   </body>
-
+  
 </html>
