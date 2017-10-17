@@ -32,16 +32,19 @@
           long = position.coords.longitude;
           console.log("lat1 = " + lat);
           console.log("long1 = " + long);
+          var uri = "https://defense-in-derpth.herokuapp.com/sendLocation";
+          xhr.open("POST", uri, true);
+          xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+              rawData = JSON.parse(xhr.responseText);
+              console.log(rawData);
+            } 
+          };
+          xhr.send("login=iJRFOmvB&lat="+lat+"&lng="+long);
+          console.log("login=iJRFOmvB&lat="+lat+"&lng="+long);
         });
-        var uri = "https://defense-in-derpth.herokuapp.com/sendLocation";
-        xhr.open("POST", uri, true);
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState == 4 && xhr.status == 200) {
-            rawData = JSON.parse(xhr.responseText);
-            console.log(rawData);
-          }
-        };
+      }
 
       function renderMap(){
 	myPos = new google.maps.LatLng(lat, long);
@@ -51,10 +54,7 @@
 	  title: "Here I Am!"
 	});
         marker.setMap(map);
-      };
-        xhr.send("login=iJRFOmvB&lat="+lat+"&lng="+long);
-        console.log("login=iJRFOmvB&lat="+lat+"&lng="+long);
-      };
+      }
       
     </script>
   </head>
