@@ -30,25 +30,25 @@
         var xhr = new XMLHttpRequest();
         navigator.geolocation.getCurrentPosition(function(position) {
           lat = position.coords.latitude;
-          long = position.coords.longitude;
+          long = position.coords.longitude;     
           xhr.open("POST", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
           xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
               rawData = JSON.parse(xhr.responseText);
-              console.log(rawData);
-            } 
+            }
+          renderMap();
           };
           xhr.send("login=iJRFOmvB&lat="+lat+"&lng="+long);
         });
-        renderMap();
       }
 
       function renderMap(){
 	myPos = new google.maps.LatLng(lat, long);
 	map.panTo(myPos);
 	marker = new google.maps.Marker({
-	  position: myPos,
+          position: myPos,
+          icon: 'me-marker.png',
 	  title: "Here I Am!"
 	});
         marker.setMap(map);
