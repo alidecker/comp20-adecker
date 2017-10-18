@@ -6,19 +6,20 @@
     <title>Landmark Locator</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvoCvuP_zoP_9Q0JNqB_dhjJsk-gVc-5s"></script>
     <link rel="stylesheet" href="landmarkstyle.css" type="text/css" />
     <script>
-      var map;
-      var marker;
       var lat = 0;
       var long = 0;
       var myPos = new google.maps.LatLng(lat, long);
       var myOptions = {
-	zoom: 10,
+	zoom: 13,
 	center: myPos,
 	mapTypeId: google.maps.MapTypeId.ROADMAP
       };
+      var map;
+      var marker;
+      var infowindow = new google.maps.InfoWindow();
 
       function init() {
         map = new google.maps.Map(document.getElementById("mapBackground"), myOptions);
@@ -30,10 +31,7 @@
         navigator.geolocation.getCurrentPosition(function(position) {
           lat = position.coords.latitude;
           long = position.coords.longitude;
-          console.log("lat1 = " + lat);
-          console.log("long1 = " + long);
-          var uri = "https://defense-in-derpth.herokuapp.com/sendLocation";
-          xhr.open("POST", uri, true);
+          xhr.open("POST", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
           xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
@@ -42,15 +40,15 @@
             } 
           };
           xhr.send("login=iJRFOmvB&lat="+lat+"&lng="+long);
-          console.log("login=iJRFOmvB&lat="+lat+"&lng="+long);
         });
+        renderMap();
       }
 
       function renderMap(){
 	myPos = new google.maps.LatLng(lat, long);
 	map.panTo(myPos);
 	marker = new google.maps.Marker({
-	  position: me,
+	  position: myPos,
 	  title: "Here I Am!"
 	});
         marker.setMap(map);
