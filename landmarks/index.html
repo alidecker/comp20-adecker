@@ -6,7 +6,7 @@
     <title>Landmark Locator</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true&libraries=geometry"></script>
     <link rel="stylesheet" href="landmarkstyle.css" type="text/css" />
     <script>
       var login = "iJRFOmvB";
@@ -22,6 +22,8 @@
       var marker;
       var allLoc = {};
       var tempInfo = new google.maps.InfoWindow();
+      var closestLandDist = 1.1; //greater than 1 mile away
+      var closestLand;
 
       //Put map on screen
       function init() {
@@ -55,57 +57,47 @@
 	myMarker = new google.maps.Marker({
           position: myPos,
           icon: 'me-marker.jpg',
-	  title: "Here I Am!"
+          title: "Here I Am!",
+          content: "Here I Am!<br>Closest landmark: bluh<br>Distance from me: bluh miles"
 	});
 	myMarker.setMap(map);	
-        google.maps.event.addListener(myMarker, 'click', clickedMe(myMarker));
+        google.maps.event.addListener(myMarker, 'click', function() {
+          tempInfo.setContent(this.content);
+          tempInfo.open(map, this);
+        });
         for (i = 0; i < allLoc.people.length; i++) {
-	  var currPos = new google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng);		
+          var currPos = new google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng);
+          //var distFromMe = google.maps.geometry.spherical.computeDistanceBetween(google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng), myPos)/1609.344;
 	  marker = new google.maps.Marker({
 	    position: currPos,
 	    icon: 'IMG_0065.jpg',
-            title: allLoc.people[i].login
+            title: allLoc.people[i].login,
+            content: allLoc.people[i].login +"<br># miles from me"
 	  });
           marker.setMap(map);		
-	  google.maps.event.addListener(marker, 'click', clickedPerson(marker, i, allLoc));
+          google.maps.event.addListener(marker, 'click', function() {
+            tempInfo.setContent(this.content);
+            tempInfo.open(map, this);
+          });
 	}
 	for (j = 0; j < allLoc.landmarks.length; j++) {
 	  var landPos = new google.maps.LatLng(allLoc.landmarks[j].geometry.coordinates[1], allLoc.landmarks[j].geometry.coordinates[0])
 	  var landMarker = new google.maps.Marker({
 	    position: landPos,
 	    icon: 'IMG_0338.jpg',
-            title: allLoc.landmarks[j].properties.Location_Name
+            title: allLoc.landmarks[j].properties.Location_Name,
+            content: allLoc.landmarks[j].properties.Details
 	  });
-	  landMarker.setMap(map);		
-	  google.maps.event.addListener(landMarker, 'click', clickedLandmark(landMarker, j, allLoc));
-	}
-      }
-
-      //Click for info windows			
-      function clickedMe(myMarker) {
-        
-        tempInfo.setContent(login);
-        tempInfo.open(map, myMarker);
-      }
-
-      function clickedPerson(marker, i, allLoc) {
-        return function() {
-if (google.maps == undefined) {
-console.log("undefined");
-}else{
-console.log("defined");
-}
-          var distFromMe = google.maps.geometry.spherical.computeDistanceBetween(google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng), myPos);
-          tempInfo.setContent(allLoc.people[i].login +"<br>"+distFromMe);
-	  tempInfo.open(map, marker);
-	}
-      }
-
-      function clickedLandmark(landMarker, j, allLoc) {
-	return function() {
-	  tempInfo.setContent(allLoc.landmarks[j].properties.Location_Name);
-	  tempInfo.open(map, landMarker);
-	}
+          landMarker.setMap(map);
+          google.maps.event.addListener(landMarker, 'click', function () {
+            tempInfo.setContent(this.content);
+            tempInfo.open(map, this);
+          });
+          /*currLandDist = google.maps.geometry.spherical.computeDistanceBetween(allLoc.landmarks[j].position, myPos)/1609.344;
+          if (currLandDist < closestLandDist) {
+            closestLand = allLoc.landmarks[j];
+          }*/
+        }
       }
 
     </script>
