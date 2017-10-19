@@ -20,6 +20,7 @@
       var map;
       var marker;
       var infowindow = new google.maps.InfoWindow();
+      var allLoc = {};
 
       function init() {
         map = new google.maps.Map(document.getElementById("mapBackground"), myOptions);
@@ -35,23 +36,33 @@
           xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
-              rawData = JSON.parse(xhr.responseText);
+              allLoc = JSON.parse(xhr.responseText);
+              console.log(allLoc);
+              renderMap();
             }
-          renderMap();
           };
           xhr.send("login=iJRFOmvB&lat="+lat+"&lng="+long);
         });
       }
 
       function renderMap(){
+        for (i = 0; i < allLoc.people.length; i++) {
+	  var currPos = new google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng);		
+	  marker = new google.maps.Marker({
+	    position: currPos,
+	    icon: 'IMG_0065.jpg',
+            title: allLoc.people[i]._id
+	  });
+	  marker.setMap(map);
 	myPos = new google.maps.LatLng(lat, long);
 	map.panTo(myPos);
 	marker = new google.maps.Marker({
           position: myPos,
-          icon: 'me-marker.png',
+          icon: 'me-marker.jpg',
 	  title: "Here I Am!"
 	});
-        marker.setMap(map);
+        marker.setMap(map);		
+        }
       }
       
     </script>
