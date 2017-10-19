@@ -6,7 +6,7 @@
     <title>Landmark Locator</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvoCvuP_zoP_9Q0JNqB_dhjJsk-gVc-5s"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
     <link rel="stylesheet" href="landmarkstyle.css" type="text/css" />
     <script>
       var lat = 0;
@@ -19,8 +19,8 @@
       };
       var map;
       var marker;
-      var infowindow = new google.maps.InfoWindow();
       var allLoc = {};
+      var tempInfo = new google.maps.InfoWindow();
 
       function init() {
         map = new google.maps.Map(document.getElementById("mapBackground"), myOptions);
@@ -45,26 +45,38 @@
         });
       }
 
-      function renderMap(){
+      function renderMap() {
+	myPos = new google.maps.LatLng(lat, long);
+ 	map.panTo(myPos);
+	myMarker = new google.maps.Marker({
+          position: myPos,
+          icon: 'me-marker.jpg',
+	  title: "Here I Am!"
+	});
+	myMarker.setMap(map);	
+        google.maps.event.addListener(myMarker, 'click', function() {
+	  tempInfo.setContent(myMarker.title);
+	  tempInfo.open(map, myMarker);
+	});
         for (i = 0; i < allLoc.people.length; i++) {
 	  var currPos = new google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng);		
 	  marker = new google.maps.Marker({
 	    position: currPos,
 	    icon: 'IMG_0065.jpg',
-            title: allLoc.people[i]._id
+            title: allLoc.people[i].login
 	  });
-	  marker.setMap(map);
-	myPos = new google.maps.LatLng(lat, long);
-	map.panTo(myPos);
-	marker = new google.maps.Marker({
-          position: myPos,
-          icon: 'me-marker.jpg',
-	  title: "Here I Am!"
-	});
-        marker.setMap(map);		
-        }
+	  marker.setMap(map);		
+	  google.maps.event.addListener(marker, 'click', clickedMarker(marker, i, allLoc));
+	}
       }
-      
+
+      function clickedMarker(marker, i, allLoc) {
+        return function() {
+	    tempInfo.setContent(allLoc.people[i].login);
+	    tempInfo.open(map, marker);
+	}
+      }
+
     </script>
   </head>
 
