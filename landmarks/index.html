@@ -66,14 +66,31 @@
             title: allLoc.people[i].login
 	  });
 	  marker.setMap(map);		
-	  google.maps.event.addListener(marker, 'click', clickedMarker(marker, i, allLoc));
+	  google.maps.event.addListener(marker, 'click', clickedPerson(marker, i, allLoc));
+	}
+	for (j = 0; j < allLoc.landmarks.length; j++) {
+	  var landPos = new google.maps.LatLng(allLoc.landmarks[j].geometry.coordinates[0], allLoc.landmarks[j].geometry.coordinates[1])
+	  marker = new google.maps.Marker({
+	    position: landPos,
+	    icon: 'IMG_0338.jpg',
+            title: allLoc.landmarks[j].properties.Location_Name
+	  });
+	  marker.setMap(map);		
+	  google.maps.event.addListener(marker, 'click', clickedLandmark(marker, j, allLoc));
 	}
       }
 
-      function clickedMarker(marker, i, allLoc) {
+      function clickedPerson(marker, i, allLoc) {
         return function() {
-	    tempInfo.setContent(allLoc.people[i].login);
-	    tempInfo.open(map, marker);
+	  tempInfo.setContent(allLoc.people[i].login);
+	  tempInfo.open(map, marker);
+	}
+      }
+
+      function clickedLandmark(marker, j, allLoc) {
+	return function() {
+	  tempInfo.setContent(allLoc.landmarks[j].properties.Location_Name);
+	  tempInfo.open(map, marker);
 	}
       }
 
