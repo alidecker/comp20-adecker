@@ -18,8 +18,7 @@
 	center: myPos,
 	mapTypeId: google.maps.MapTypeId.ROADMAP
       };
-      var map;
-      var marker;
+      var map, marker;
       var allLoc = {};
       var tempInfo = new google.maps.InfoWindow();
       var closestLandDist = 1.1; //greater than 1 mile away
@@ -53,12 +52,21 @@
       //Put me, others, and landmarks on map
       function renderMap() {
 	myPos = new google.maps.LatLng(lat, long);
- 	map.panTo(myPos);
+        map.panTo(myPos);
+        for (k = 0; k < allLoc.landmarks.length; k++) {
+          var landPos = new google.maps.LatLng(allLoc.landmarks[k].geometry.coordinates[1], allLoc.landmarks[k].geometry.coordinates[0]);
+          currLandDist = google.maps.geometry.spherical.computeDistanceBetween(landPos, myPos)/1609.344;
+          if (currLandDist < closestLandDist) {
+            closestLand = allLoc.landmarks[k];
+            closestLandDist = currLandDist;
+          }
+        }
+        var closeLandStrg = closestLand.properties.Location_Name+"<br>"+closestLandDist+" miles from me"
 	myMarker = new google.maps.Marker({
           position: myPos,
           icon: 'me-marker.jpg',
           title: "Here I Am!",
-          content: "Here I Am!<br>Closest landmark: bluh<br>Distance from me: bluh miles"
+          content: "Here I Am!<br>Closest landmark: "+closeLandStrg
 	});
 	myMarker.setMap(map);	
         google.maps.event.addListener(myMarker, 'click', function() {
@@ -67,12 +75,12 @@
         });
         for (i = 0; i < allLoc.people.length; i++) {
           var currPos = new google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng);
-          //var distFromMe = google.maps.geometry.spherical.computeDistanceBetween(google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng), myPos)/1609.344;
+          var distFromMe = google.maps.geometry.spherical.computeDistanceBetween(currPos, myPos)/1609.344;
 	  marker = new google.maps.Marker({
 	    position: currPos,
 	    icon: 'IMG_0065.jpg',
             title: allLoc.people[i].login,
-            content: allLoc.people[i].login +"<br># miles from me"
+            content: "Username: "+allLoc.people[i].login+"<br>"+distFromMe+" miles from me"
 	  });
           marker.setMap(map);		
           google.maps.event.addListener(marker, 'click', function() {
@@ -81,8 +89,8 @@
           });
 	}
 	for (j = 0; j < allLoc.landmarks.length; j++) {
-	  var landPos = new google.maps.LatLng(allLoc.landmarks[j].geometry.coordinates[1], allLoc.landmarks[j].geometry.coordinates[0])
-	  var landMarker = new google.maps.Marker({
+          var landPos = new google.maps.LatLng(allLoc.landmarks[j].geometry.coordinates[1], allLoc.landmarks[j].geometry.coordinates[0]);
+          var landMarker = new google.maps.Marker({
 	    position: landPos,
 	    icon: 'IMG_0338.jpg',
             title: allLoc.landmarks[j].properties.Location_Name,
@@ -93,10 +101,6 @@
             tempInfo.setContent(this.content);
             tempInfo.open(map, this);
           });
-          /*currLandDist = google.maps.geometry.spherical.computeDistanceBetween(allLoc.landmarks[j].position, myPos)/1609.344;
-          if (currLandDist < closestLandDist) {
-            closestLand = allLoc.landmarks[j];
-          }*/
         }
       }
 
