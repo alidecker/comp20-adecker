@@ -14,7 +14,7 @@
       var long = 0;
       var myPos = new google.maps.LatLng(lat, long);
       var myOptions = {
-	zoom: 13,
+	zoom: 14,
 	center: myPos,
 	mapTypeId: google.maps.MapTypeId.ROADMAP
       };
@@ -22,7 +22,7 @@
       var allLoc = {};
       var tempInfo = new google.maps.InfoWindow();
       var closestLandDist = 1.1; //greater than 1 mile away
-      var closestLand;
+      var closestLand, closestLandPos;
 
       //Put map on screen
       function init() {
@@ -41,7 +41,6 @@
           xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
               allLoc = JSON.parse(xhr.responseText);
-              console.log(allLoc);
               renderMap();
             }
           };
@@ -55,23 +54,26 @@
         map.panTo(myPos);
         for (k = 0; k < allLoc.landmarks.length; k++) {
           var landPos = new google.maps.LatLng(allLoc.landmarks[k].geometry.coordinates[1], allLoc.landmarks[k].geometry.coordinates[0]);
-          currLandDist = google.maps.geometry.spherical.computeDistanceBetween(landPos, myPos)/1609.344;
+          var currLandDist = google.maps.geometry.spherical.computeDistanceBetween(landPos, myPos)/1609.344;
           if (currLandDist < closestLandDist) {
             closestLand = allLoc.landmarks[k];
             closestLandDist = currLandDist;
+            closestLandPos = landPos;
           }
         }
         var closeLandStrg = closestLand.properties.Location_Name+"<br>"+closestLandDist+" miles from me"
 	myMarker = new google.maps.Marker({
           position: myPos,
           icon: 'me-marker.jpg',
-          title: "Here I Am!",
-          content: "Here I Am!<br>Closest landmark: "+closeLandStrg
+          title: "Here I Am! Username: "+login,
+          content: "Here I Am! Username: "+login+"<br>Closest landmark: "+closeLandStrg
 	});
 	myMarker.setMap(map);	
         google.maps.event.addListener(myMarker, 'click', function() {
           tempInfo.setContent(this.content);
           tempInfo.open(map, this);
+          var line = new google.maps.Polyline({path: [closestLandPos, myPos]});
+          line.setMap(map);
         });
         for (i = 0; i < allLoc.people.length; i++) {
           var currPos = new google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng);
