@@ -9,6 +9,7 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
     <link rel="stylesheet" href="landmarkstyle.css" type="text/css" />
     <script>
+      var login = "iJRFOmvB";
       var lat = 0;
       var long = 0;
       var myPos = new google.maps.LatLng(lat, long);
@@ -22,11 +23,13 @@
       var allLoc = {};
       var tempInfo = new google.maps.InfoWindow();
 
+      //Put map on screen
       function init() {
         map = new google.maps.Map(document.getElementById("mapBackground"), myOptions);
         getLocation();
       }
 
+      //Get my location
       function getLocation(){
         var xhr = new XMLHttpRequest();
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -41,10 +44,11 @@
               renderMap();
             }
           };
-          xhr.send("login=iJRFOmvB&lat="+lat+"&lng="+long);
+          xhr.send("login="+login+"&lat="+lat+"&lng="+long);
         });
       }
 
+      //Put me, others, and landmarks on map
       function renderMap() {
 	myPos = new google.maps.LatLng(lat, long);
  	map.panTo(myPos);
@@ -54,10 +58,7 @@
 	  title: "Here I Am!"
 	});
 	myMarker.setMap(map);	
-        google.maps.event.addListener(myMarker, 'click', function() {
-	  tempInfo.setContent(myMarker.title);
-	  tempInfo.open(map, myMarker);
-	});
+        google.maps.event.addListener(myMarker, 'click', clickedMe(myMarker));
         for (i = 0; i < allLoc.people.length; i++) {
 	  var currPos = new google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng);		
 	  marker = new google.maps.Marker({
@@ -65,32 +66,45 @@
 	    icon: 'IMG_0065.jpg',
             title: allLoc.people[i].login
 	  });
-	  marker.setMap(map);		
+          marker.setMap(map);		
 	  google.maps.event.addListener(marker, 'click', clickedPerson(marker, i, allLoc));
 	}
 	for (j = 0; j < allLoc.landmarks.length; j++) {
-	  var landPos = new google.maps.LatLng(allLoc.landmarks[j].geometry.coordinates[0], allLoc.landmarks[j].geometry.coordinates[1])
-	  marker = new google.maps.Marker({
+	  var landPos = new google.maps.LatLng(allLoc.landmarks[j].geometry.coordinates[1], allLoc.landmarks[j].geometry.coordinates[0])
+	  var landMarker = new google.maps.Marker({
 	    position: landPos,
 	    icon: 'IMG_0338.jpg',
             title: allLoc.landmarks[j].properties.Location_Name
 	  });
-	  marker.setMap(map);		
-	  google.maps.event.addListener(marker, 'click', clickedLandmark(marker, j, allLoc));
+	  landMarker.setMap(map);		
+	  google.maps.event.addListener(landMarker, 'click', clickedLandmark(landMarker, j, allLoc));
 	}
+      }
+
+      //Click for info windows			
+      function clickedMe(myMarker) {
+        
+        tempInfo.setContent(login);
+        tempInfo.open(map, myMarker);
       }
 
       function clickedPerson(marker, i, allLoc) {
         return function() {
-	  tempInfo.setContent(allLoc.people[i].login);
+if (google.maps == undefined) {
+console.log("undefined");
+}else{
+console.log("defined");
+}
+          var distFromMe = google.maps.geometry.spherical.computeDistanceBetween(google.maps.LatLng(allLoc.people[i].lat, allLoc.people[i].lng), myPos);
+          tempInfo.setContent(allLoc.people[i].login +"<br>"+distFromMe);
 	  tempInfo.open(map, marker);
 	}
       }
 
-      function clickedLandmark(marker, j, allLoc) {
+      function clickedLandmark(landMarker, j, allLoc) {
 	return function() {
 	  tempInfo.setContent(allLoc.landmarks[j].properties.Location_Name);
-	  tempInfo.open(map, marker);
+	  tempInfo.open(map, landMarker);
 	}
       }
 
