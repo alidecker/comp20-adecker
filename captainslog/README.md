@@ -3,7 +3,7 @@
 1. Identify what aspects of the work have been correctly implemented and what have not.
 - Input messages display dynamically.
 - Each log entry features a human-readable time stamp, followed by a " - " and then the input message.
-- Newest input message prepends the log.
+- Newest log entry prepends the log.
 - Log is saved in local storage, and is printed to page after refresh.
 2. Identify anyone with whom you have collaborated or discussed the assignment.
 - None.
