@@ -8,11 +8,21 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-        // Your work will be done here...
-        var currTime = Date(Date.now());
-        var dispTime = currTime.toString();
-        var message = dispTime+" - whatever user typed"
-        console.log(message);
+        $(document).ready(function(){
+            $('h3').on('keydown', '#msg', function(e) {
+                var key = e.which;
+                switch (key) {
+                case 13:
+                    var currTime = Date(Date.now());
+                    var dispTime = currTime.toString();
+                    var message = dispTime+" "+msg.value;
+                    console.log(message);
+                default:
+                    break;
+                };
+            });
+        });
+        // And remember the message
     </script>
 </head>
 
