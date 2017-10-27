@@ -9,6 +9,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
         $(document).ready(function(){
+            if (localStorage.allLog != undefined) {
+                $('#log').prepend(localStorage.allLog+"<br>", log);
+            }
             $('h3').on('keydown', '#msg', function(e) {
                 var key = e.which;
                 switch (key) {
@@ -16,14 +19,14 @@
                     var currTime = Date(Date.now());
                     var dispTime = currTime.toString();
                     var message = dispTime+" - "+msg.value;
-                    $('#log').prepend('<br>'+message, log);
-                    $('#log').html(log.value);
+                    $('#log').prepend(message+"<br>", $('#log').html());
+                    localStorage.setItem("allLog", $('#log').html());
+                    console.log(log);
                 default:
                     break;
                 };
             });
         });
-        // And remember the message
     </script>
 </head>
 
