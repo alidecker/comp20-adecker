@@ -15,8 +15,9 @@
                 case 13:
                     var currTime = Date(Date.now());
                     var dispTime = currTime.toString();
-                    var message = dispTime+" "+msg.value;
-                    console.log(message);
+                    var message = dispTime+" - "+msg.value;
+                    $('#log').prepend('<br>'+message, log);
+                    $('#log').html(log.value);
                 default:
                     break;
                 };
