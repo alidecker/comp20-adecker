@@ -1,3 +1,24 @@
 .title-info {
-	border-bottom-color: 4px dashed black;
+	border-bottom: 2px dashed black;
+}
+
+.title-info ul{
+	font-size: 20px;
+	padding-left: 0px;
+}
+
+.title-info li{
+	font-size: 16px;
+}
+
+.analysis ol {
+	padding-left: 0px;
+}
+
+.analysis li {
+	font-size: 20px;
+}
+
+.analysis p {
+	font-size: 16px;
 }

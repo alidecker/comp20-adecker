@@ -4,7 +4,7 @@
 <head>
 	<title>Security Issues</title>
 	<meta charset="utf-8"/>
-	<link rel="stylesheet" ref="asst4-style.css"/>
+	<link rel="stylesheet" href="asst4-style.css"/>
 </head>
 <body>
 	<div class="title-info">
@@ -16,23 +16,25 @@
 			<li><a href="abstract">Abstract of Findings</a></li>
 			<li><a href="issues">Issues Found</a></li>
 			<li><a href="concl">Conclusions</a></li>
-			<li><a href="refs">Resources</a></li>
+			<li><a href="refs">References</a></li>
 		</ul>
 	</div>
-	<h2><a name="intro">Introduction</a></h2>
-	<p>The product analyzed is a web application that gets the user's current location, sends it to a database for storage and processing, and then displays the locations of other users and nearby landmarks on a map. This web application also calculates the nearest landmark to the user and identifies this landmark on the map by displaying a line between the user's icon and the landmark. The database used is MongoDB, and the map uses the Google Maps API.</p>
-	<h2><a name="methods">Methodology</a></h2>
-	<p>First, the client side was examined and toyed with in Google Chrome. Second, the client-side code (i.e. html) were examined and analyzed. Lastly, the server code was examined and toyed with using curl on the command line in Terminal. Throughout this process, online articles were consulted to gain exposure and understanding about web security issues (see References section).
-	<h2><a name="abstract">Abstract of Findings</a></h2>
-	<h2><a name="issues">Issues Found</a></h2>
-	<ol start="1">
-		<li>Database Injection: "login" Value in /sendLocation
-			<p>Since index.js does not check that the login is legitimate (e.g., that it contains only alphanumeric characters, or that it is below a certain character length), a user could send JavaScript code as the login. This would then be read by the pr
-		</li><li>Non-Legitimate Latitude &amp Longitude
-			<p>POST /sendLocation does not check that the user entered a legitimate latitude nor longitude. However, the Google Maps API will display only legitimate coordinates; thus, if the coordinates are not legitimate, the user's position will not appear on the map and an error will ensue.</p>
-		</li>
-	</ol>
-	<h2><a name="concl">Conclusion</a></h2>
-	<h2><a name="refs">References</a></h2>
+	<div class="analysis">
+		<h2><a name="intro">Introduction</a></h2>
+		<p>The product analyzed is a web application that gets the user's current location, sends it to a database for storage and processing, and then displays the locations of other users and nearby landmarks on a map. This web application also calculates the nearest landmark to the user and, upon clicking on the user's icon, displays a line between the user's icon and this landmark. The database used is MongoDB, and the map uses the Google Maps API.</p>
+		<h2><a name="methods">Methodology</a></h2>
+		<p>First, the client side was examined and toyed with in Google Chrome. Second, the client-side code (i.e. html) were examined and analyzed. Lastly, the server code was examined and toyed with using curl on the command line in Terminal. Throughout this process, online articles were consulted to gain exposure and understanding about web security issues (see <a href="refs">References</a> section).
+		<h2><a name="abstract">Abstract of Findings</a></h2>
+		<h2><a name="issues">Issues Found</a></h2>
+		<ol start="1">
+			<li>Database Injection: "login" Value in /sendLocation
+				<p>Since index.js does not check that the login is legitimate (e.g., that it contains only alphanumeric characters, or that it is below a certain character length), a user could send JavaScript code as the login. This would then be read by the pr
+			</li><li>Non-Legitimate Latitude &amp Longitude
+				<p>POST /sendLocation does not check that the user entered a legitimate latitude nor longitude. However, the Google Maps API will display only legitimate coordinates; thus, if the coordinates are not legitimate, the user's position will not appear on the map and an error will ensue.</p>
+			</li>
+		</ol>
+		<h2><a name="concl">Conclusion</a></h2>
+		<h2><a name="refs">References</a></h2>
+	</div>
 </body>
 </html>
