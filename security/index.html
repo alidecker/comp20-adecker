@@ -28,9 +28,11 @@
 		<h2><a name="issues">Issues Found</a></h2>
 		<ol start="1">
 			<li>Database Injection: "login" Value in /sendLocation
-				<p>Since index.js does not check that the login is legitimate (e.g., that it contains only alphanumeric characters, or that it is below a certain character length), a user could send JavaScript code as the login. This would then be read by the pr
+				<p>Since index.js does not check that the login is legitimate (e.g., that it contains only alphanumeric characters, or that it is below a certain character length), a user could send JavaScript code as the login. This would then be executed by the page whenever that login should be displayed on the page. In this particular web application, the login is displayed when the user clicks on their icon on the map.</p>
+				<p>Write what I did here</p>
 			</li><li>Non-Legitimate Latitude &amp Longitude
 				<p>POST /sendLocation does not check that the user entered a legitimate latitude nor longitude. However, the Google Maps API will display only legitimate coordinates; thus, if the coordinates are not legitimate, the user's position will not appear on the map and an error will ensue.</p>
+				<p>Write what I did here</p>
 			</li>
 		</ol>
 		<h2><a name="concl">Conclusion</a></h2>
