@@ -28,8 +28,14 @@
 		<h2><a name="issues">Issues Found</a></h2>
 		<ol start="1">
 			<li>Database Injection: "login" Value in /sendLocation
-				<p>Since index.js does not check that the login is legitimate (e.g., that it contains only alphanumeric characters, or that it is below a certain character length), a user could send JavaScript code as the login. This would then be executed by the page whenever that login should be displayed on the page. In this particular web application, the login is displayed when the user clicks on their icon on the map.</p>
-				<p>Write what I did here</p>
+				<p>Since index.js does not check that the login is legitimate (e.g., that it contains only alphanumeric characters, or that it is below a certain character length), a user could send JavaScript code as the login. This would then be executed by the page whenever that login should be displayed on the page. In this particular web application, the login executes as JavaScript in /checkins, but not in that checkin's info window in index.html. It likely does not read the login as code in the map because the Google Maps API has safeguards against this for their info windows.</p>
+				<p>To demonstrate this, I added a checkin to MongoDB using curl in the command window. The login field is JavaScript code that redirects to the MySpace homepage.</p>
+				<p><img src="COMP20-curlLogin-before.png" alt="curl redirect to MySpace"/></p>
+				<p><img src="COMP20-curlLogin-database.png" alt="MySpace checkin in MongoDB"/></p>
+				<p>When you click on this new entry on the map screen (index.html), the info window shows no login, and it does not redirect to MySpace. It likely does not read the login as code in the map because the Google Maps API has safeguards against this for their info windows.</p>
+				<p><video src="COMP20-mapNoLogin.mov" alt="map info window without login"/></p>
+				<p>When you visit the /checkins page, however, the site does read the new login as JavaScript, execute it, and thus redirect you to MySpace.</p>
+				<p><video src="COMP20-checkinsRedirect.mov" alt="checkins redirects to MySpace"/></p>
 			</li><li>Non-Legitimate Latitude &amp Longitude
 				<p>POST /sendLocation does not check that the user entered a legitimate latitude nor longitude. However, the Google Maps API will display only legitimate coordinates; thus, if the coordinates are not legitimate, the user's position will not appear on the map and an error will ensue.</p>
 				<p>Write what I did here</p>
