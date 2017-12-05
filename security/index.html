@@ -21,7 +21,7 @@
 	</div>
 	<div class="analysis">
 		<h2><a name="intro">Introduction</a></h2>
-		<p>The product analyzed is a web application that gets the user's current location, sends it to a database for storage and processing, and then displays the locations of other users and nearby landmarks on a map. This web application also calculates the nearest landmark to the user and, upon clicking on the user's icon, displays a line between the user's icon and this landmark. The database used is MongoDB, and the map uses the Google Maps API.</p>
+		<p>This paper presents the security weaknesses in a map website. The product analyzed is a web application that gets the user's current location, sends it to a database for storage and processing, and then displays the locations of other users and nearby landmarks on a map. This web application also calculates the nearest landmark to the user and, upon clicking on the user's icon, displays a line between the user's icon and this landmark. The database used is MongoDB, and the map is made using the Google Maps API.</p>
 		<h2><a name="methods">Methodology</a></h2>
 		<p>First, the client side was examined and toyed with in Google Chrome. Second, the client-side code (i.e. html) were examined and analyzed. Lastly, the server code was examined and toyed with using curl on the command line in Terminal. Throughout this process, online articles were consulted to gain exposure and understanding about web security issues (see <a href="refs">References</a> section).
 		<h2><a name="abstract">Abstract of Findings</a></h2>
@@ -33,6 +33,8 @@
 			</li><li>Non-Legitimate Latitude &amp Longitude
 				<p>POST /sendLocation does not check that the user entered a legitimate latitude nor longitude. However, the Google Maps API will display only legitimate coordinates; thus, if the coordinates are not legitimate, the user's position will not appear on the map and an error will ensue.</p>
 				<p>Write what I did here</p>
+			</li><li>Insert Inappropriate Query String in /checkins.json
+				<p></p>
 			</li>
 		</ol>
 		<h2><a name="concl">Conclusion</a></h2>
