@@ -10,39 +10,40 @@
 	<div id="title-info">
 		<h1>whispering-hollows-86285 Security Issues</h1>
 		<h3>Ali Decker<br>December 6th, 2017</h3>
-		<ul>Menu
+		<ul>Table of Contents
 			<li><a href="#intro">Introduction</a></li>
 			<li><a href="#methods">Methodology</a></li>
 			<li><a href="#abstract">Abstract of Findings</a></li>
 			<li><a href="#issues">Issues Found</a></li>
-			<li><a href="#concl">Conclusions</a></li>
+			<li><a href="#concl">Conclusion</a></li>
 			<li><a href="#refs">References</a></li>
 		</ul>
 	</div>
 	<div class="analysis">
 		<h2><a id="intro">Introduction</a></h2>
-		<p>This paper presents the security weaknesses in a map website. The product analyzed is a web application that gets the user's current location, sends it to a database for storage and processing, and then displays the locations of other users and nearby landmarks on a map. This web application also calculates the nearest landmark to the user and, upon clicking on the user's icon, displays a line between the user's icon and this landmark. The database used is MongoDB, and the map is made using the Google Maps API.</p>
+		<p>This paper presents the security weaknesses in the Landmark Locator website. The product analyzed is a web application that gets the user's current location, sends it to a database for storage and processing, and then displays the locations of other users and nearby landmarks on a map. This web application also calculates the nearest landmark to the user and, upon clicking on the user's icon, displays a line between the user's icon and this landmark. The database used is MongoDB, and the map is made using the Google Maps API.</p>
 		<h2><a id="methods">Methodology</a></h2>
 		<p>First, the client side sites (Landmark Locator and https://whispering-hollows-86285.herokuapp.com/checkins.json) were examined and toyed with in Google Chrome. Second, the client-side code (index.html) was examined and analyzed. Lastly, the server code (index.js) was examined and toyed with using curl on the command line. Throughout this process, online articles were consulted to gain exposure and understanding about web security issues (see <a href="#refs">References</a> section).
 		<h2><a id="abstract">Abstract of Findings</a></h2>
 		<p>Overall, this web application has been deemed unsafe for the following reasons (as named in <a href="https://www.owasp.org/index.php/Top_10_2017-Top_10">OWASP's Top 10 of 2017</a>):
 			<div class="severity-list">
-				<ul><li>Injection</li>
-					<li>Cross-Site Scripting (XSS)</li>
-					<li>Broken Access Control</li>
-					<li>Sensitive Data Exposure</li>
+				<ul><li>Injection through POST /sendLocation</li>
+					<li>Cross-Site Scripting (XSS) through POST /sendLocation, which then affects all pages</li>
+					<li>Broken Access Control through /checkins.json query string</li>
+					<li>Sensitive Data Exposure through /checkins.json query string</li>
 				</ul>
 			</div>
+			<p>Solutions consist of disallowing or replacing special characters so that a user cannot unlock unwanted behavior such as site redirection, data collection, and data access.
 		<h2><a id="issues">Issues Found</a></h2>
 		<ol start="1">
 			<li>1. Insert Inappropriate Query String in /checkins.json
-				<p>On the checkins page, the user can type a query string requesting to see any checkin NOT equal to a particular username. This could result in a data breach, since the user could see the checkins of users - their usernames,  locations, and times visited - that they are not authorized to see. Also, as presented in the video below, a nefarious checkin (e.g., a login that is actually JavaScript - see <a href="#XSS">2. Database Injection</a>) could redirect the user to an unwanted place or gather their information and store it in an unwanted place.</p>
+				<p>On the checkins page, the user can type a query string requesting to see any checkin <span class="ital">not</span> equal to a particular username. This could result in a data breach, since the user could see the checkins of users - their usernames,  locations, and times visited - that they are not authorized to see. Also, as presented in the video below, a nefarious checkin (e.g., a login that is actually JavaScript - see <a href="#XSS">2. Database Injection</a>) could redirect the user to an unwanted place or gather their information and store it in an unwanted place.</p>
 				<p><video src="COMP20-neCheckin.mov" alt="not-equal login shows many checkins, and a nasty checkin redirects to MySpace" controls></video></p>
-				<div class="severity-list"><p>This issue is high severity for two reasons: 
-					<ul><li>The user can see other users' data with merely the knowledge of their own username. Also, on many sites, there is only one instance of a given username; thus, if a user searches for anyone but himself, he gets <span id="everyone">everyone</span> else's checkins because he is the only one with his username.</li>
+				<div class="severity-list"><p>This issue is of high severity for two reasons: 
+					<ul><li>The user can see other users' data with merely the knowledge of their own username. Also, on many sites, there is only one instance of a given username; thus, if a user searches for anyone but himself, he gets <span class="ital">everyone</span> else's checkins because he is the only one with his username.</li>
 					<li>If a previous user did some cross-site scripting and had a checkin value that is actually JavaScript code, this could redirect the current user to a bad site and give them a virus, or somehow extract data from them and save it somewhere.</li></ul>
 				</p></div>
-				<p>The solution is not to allow the user to type '[$ne]' into the query string. We can use the module "mongo-sanitize", as described in the screenshot below from <a href="https://www.zanon.io/posts/nosql-injection-in-mongodb">NoSQL Injection in MongoDB</a>.</p>
+				<p>The solution is not to allow the user to type '[$ne]' into the query string. We can use the module "mongo-sanitize" to disallow this, as described in the screenshot below from <a href="https://www.zanon.io/posts/nosql-injection-in-mongodb">NoSQL Injection in MongoDB</a>.</p>
 				<p><img src="COMP20-nePrevent.png" alt="prevent not-equal request with module mongo-sanitize"></p>
 			</li><li><a id="XSS">2. Database Injection: "login" Value in /sendLocation</a>
 				<p>Since index.js does not check that the login is legitimate (e.g., that it contains only alphanumeric characters, or that it is below a certain character length), a user could send JavaScript code as the login. This would then be executed by the page whenever that login should be displayed on the page.</p>
@@ -50,7 +51,7 @@
 				<p><img src="COMP20-curlLogin-before.png" alt="curl redirect to MySpace"/></p>
 				<p>Here it is saved in MongoDB:</p>
 				<p><img src="COMP20-curlLogin-database.png" alt="MySpace checkin in MongoDB"/></p>
-				<p>When you click on this new entry on the Landmark Locator page (index.html), the info window shows no login, and it does not redirect to MySpace. It likely does not read the login as code in the map because the Google Maps API has safeguards against this for their info windows.</p>
+				<p>When you click on this new entry on the Landmark Locator page (index.html), the info window shows no login, and the page does not redirect to MySpace. It likely does not read the login as code in the map because the Google Maps API has safeguards against this for their info windows.</p>
 				<p><video src="COMP20-mapNoLogin.mov" alt="map info window without login" controls></video></p>
 				<p>When you visit the checkins page (<a href="https://whispering-hollows-86285.herokuapp.com">https://whispering-hollows-86285.herokuapp.com</a>), however, the site does read the new login as JavaScript, execute it, and thus redirect you to MySpace.</p>
 				<p><video src="COMP20-checkinsRedirect.mov" alt="checkins redirects to MySpace" controls></video></p>
@@ -59,7 +60,7 @@
 				<p><img src="COMP20-XSSsolution.png" alt="JS code replaces special characters"/></p>
 			</li><li>3. Non-Legitimate Latitude &amp Longitude
 				<p>POST /sendLocation does not check that the user entered a legitimate latitude nor longitude. However, the Google Maps API will display only legitimate coordinates; thus, if the coordinates are not legitimate, the user's position will not appear on the map and an error will ensue.</p>
-				<p>To test this, I used curl to check in someone at latitude and longitude values that are strings. The response in the command window was an error message (see below image), yet my entry did save to MongoDB and show in the checkins page. In Landmark Locator, no errors showed in the console and nothing funky printed to the screen.</p>
+				<p>To test this, I used curl to check in someone at latitude and longitude values that are strings. The response in the command window was an error message, yet my entry did save to MongoDB and show in the checkins page (see below images, in which I sent the data twice). In Landmark Locator, no errors showed in the console and nothing strange printed to the screen.</p>
 				<p><img src="COMP20-latLngTrollDB.png" alt="sent strings as lat and lng"></p>
 				<p><img src="COMP20-latLngTrollCheckins.png" alt="lat and lng as strings appear in checkins list"></p>
 				<div class="severity-list"><p>This issue is of high severity for two reasons:</p>
@@ -71,6 +72,7 @@
 			</li>
 		</ol>
 		<h2><a id="concl">Conclusion</a></h2>
+		<p>As Tufts University professor Ming Chow would say, "Never trust user input." This particular analysis has focused on the case of the expert user hacking into a website in ways that the website did not originally intend, for purposes that the website should not permit. Landmark Locator showed potential for broken access control, sensitive data exposure, injection, and cross-site scripting. Overall, the solution is to think like the hacker: what characters would a hacker need for their entry to be executed as code, for example? Well, if we disallow those characters, then that entry cannot be read as code and executed. The moral of the story is to think about your own work with the critical eye of a hacker looking to do no good.</p>
 		<a href="#title-info">Go to Top</a>
 	</div><div class="references">
 		<h2><a id="refs">References</a></h2>
