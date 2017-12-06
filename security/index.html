@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="asst4-style.css"/>
 </head>
 <body>
-	<div class="title-info">
+	<div id="title-info">
 		<h1>whispering-hollows-86285 Security Issues</h1>
 		<h3>Ali Decker<br>December 6th, 2017</h3>
 		<ul>Menu
@@ -30,16 +30,17 @@
 			<li>1. Insert Inappropriate Query String in /checkins.json
 				<p>On the checkins page, the user can type a query string requesting to see any checkin NOT equal to a particular username. This could result in a data breach, since the user could see the checkins of users - their usernames,  locations, and times visited - that they are not authorized to see. Also, as presented in the video below, a nefarious checkin (e.g., a login that is actually JavaScript - see <a href="#XSS">2. Database Injection</a>) could redirect the user to an unwanted place or gather their information and store it in an unwanted place.</p>
 				<p><video src="COMP20-neCheckin.mov" alt="not-equal login shows many checkins, and a nasty checkin redirects to MySpace" controls></video></p>
-				<div class="qstring-severity"><p>This issue is high severity for two reasons: 
-					<ul><li>The user can see other users' data with merely the knowledge of their own username. Also, on many sites, there is only one instance of a given username; thus, if a user searches for anyone but himself, he gets everyone else's checkins because he is the only one with his username.</li>
+				<div class="severity-list"><p>This issue is high severity for two reasons: 
+					<ul><li>The user can see other users' data with merely the knowledge of their own username. Also, on many sites, there is only one instance of a given username; thus, if a user searches for anyone but himself, he gets <span id="everyone">everyone</span> else's checkins because he is the only one with his username.</li>
 					<li>If a previous user did some cross-site scripting and had a checkin value that is actually JavaScript code, this could redirect the current user to a bad site and give them a virus, or somehow extract data from them and save it somewhere.</li></ul>
 				</p></div>
-				<p>The solution is not to allow the user to type '[$ne]' into the query string. Since this web application uses MongoDB, it makes sense to use the module "mongo-sanitize", as described in the screenshot below from <a href="https://www.zanon.io/posts/nosql-injection-in-mongodb">NoSQL Injection in MongoDB</a>.</p>
+				<p>The solution is not to allow the user to type '[$ne]' into the query string. We can use the module "mongo-sanitize", as described in the screenshot below from <a href="https://www.zanon.io/posts/nosql-injection-in-mongodb">NoSQL Injection in MongoDB</a>.</p>
 				<p><img src="COMP20-nePrevent.png" alt="prevent not-equal request with module mongo-sanitize"></p>
 			</li><li><a id="XSS">2. Database Injection: "login" Value in /sendLocation</a>
 				<p>Since index.js does not check that the login is legitimate (e.g., that it contains only alphanumeric characters, or that it is below a certain character length), a user could send JavaScript code as the login. This would then be executed by the page whenever that login should be displayed on the page.</p>
 				<p>To test this, I added a checkin to MongoDB using curl in the command window. The login field is JavaScript code that redirects to the MySpace homepage.</p>
 				<p><img src="COMP20-curlLogin-before.png" alt="curl redirect to MySpace"/></p>
+				<p>Here it is saved in MongoDB:</p>
 				<p><img src="COMP20-curlLogin-database.png" alt="MySpace checkin in MongoDB"/></p>
 				<p>When you click on this new entry on the Landmark Locator page (index.html), the info window shows no login, and it does not redirect to MySpace. It likely does not read the login as code in the map because the Google Maps API has safeguards against this for their info windows.</p>
 				<p><video src="COMP20-mapNoLogin.mov" alt="map info window without login" controls></video></p>
@@ -50,10 +51,19 @@
 				<p><img src="COMP20-XSSsolution.png" alt="JS code replaces special characters"/></p>
 			</li><li>3. Non-Legitimate Latitude &amp Longitude
 				<p>POST /sendLocation does not check that the user entered a legitimate latitude nor longitude. However, the Google Maps API will display only legitimate coordinates; thus, if the coordinates are not legitimate, the user's position will not appear on the map and an error will ensue.</p>
-				<p>Write what I did here</p>
+				<p>To test this, I used curl to check in someone at latitude and longitude values that are strings. The response in the command window was an error message (see below image), yet my entry did save to MongoDB and show in the checkins page. In Landmark Locator, no errors showed in the console and nothing funky printed to the screen.</p>
+				<p><img src="COMP20-latLngTrollDB.png" alt="sent strings as lat and lng"></p>
+				<p><img src="COMP20-latLngTrollCheckins.png" alt="lat and lng as strings appear in checkins list"></p>
+				<div class="severity-list"><p>This issue is of high severity for two reasons:</p>
+					<ul><li>An illegitimate latitude and/or longitude could break the functionality of a website. Thankfully, this one uses the Google Maps API, which has checks for a host of code-break attempts and so, probabilistically, should not break. However, other map websites may not use as well-developed an API and so may break for this reason.</li>
+					<li>This is yet another opportunity for cross-site scripting, as discussed in previous sections.</li>
+				</ul></div>
+				<p>The solution is to check for legitimate latitude and longitude values. One way to do this is to use the "validator" module to ensure that the coordinates are legitimate, and then to convert the coordinates to floats.</p>
+				<p><img src="COMP20-latLngvalid.png" alt="code that validates lat and lng"></p>
 			</li>
 		</ol>
 		<h2><a id="concl">Conclusion</a></h2>
+		<a href="#title-info">Go to Top</a>
 	</div><div class="references">
 		<h2><a id="refs">References</a></h2>
 		<ol>
@@ -62,5 +72,6 @@
 			<li>Which characters need to be escaped on HTML? Stack Overflow. Accessed 5 Dec 2017 at <a href="https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html">https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html</a></li>
 		</ol>
 	</div>
+	<a href="#title-info">Go to Top</a>
 </body>
 </html>
