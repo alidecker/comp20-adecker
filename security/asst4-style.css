@@ -18,12 +18,18 @@
 
 .analysis li {
 	font-size: 20px;
+	list-style-type: none;
 }
 
 .analysis p {
 	font-size: 16px;
 }
 
-img {
-	size: 50%;
+.references ol {
+	padding-left: 16px;
+}
+
+img, video {
+	width: 90%;
+	height: auto;
 }
