@@ -34,7 +34,7 @@
 					<ul><li>The user can see other users' data with merely the knowledge of their own username. Also, on many sites, there is only one instance of a given username; thus, if a user searches for anyone but himself, he gets everyone else's checkins because he is the only one with his username.</li>
 					<li>If a previous user did some cross-site scripting and had a checkin value that is actually JavaScript code, this could redirect the current user to a bad site and give them a virus, or somehow extract data from them and save it somewhere.</li></ul>
 				</p></div>
-				<p>The solution is not to allow the user to type '[$ne]' into the query string. Since this web application uses MongoDB, it makes sense to use the module "mongo-sanitize", as described in the screenshot below.</p>
+				<p>The solution is not to allow the user to type '[$ne]' into the query string. Since this web application uses MongoDB, it makes sense to use the module "mongo-sanitize", as described in the screenshot below (<a href="https://www.zanon.io/posts/nosql-injection-in-mongodb">NoSQL Injection in MongoDB</a>).</p>
 				<p><img src="COMP20-nePrevent.png" alt="prevent not-equal request with module mongo-sanitize"></p>
 			</li><li><a name="XSS">2. Database Injection: "login" Value in /sendLocation</a>
 				<p>Since index.js does not check that the login is legitimate (e.g., that it contains only alphanumeric characters, or that it is below a certain character length), a user could send JavaScript code as the login. This would then be executed by the page whenever that login should be displayed on the page. In this particular web application, the login executes as JavaScript in /checkins, but not in that checkin's info window in index.html. It likely does not read the login as code in the map because the Google Maps API has safeguards against this for their info windows.</p>
@@ -57,6 +57,7 @@
 	</div><div class="references">
 		<h2><a name="refs">References</a></h2>
 		<ol>
+			<li>NoSQL Injection in MongoDB. Zanon. Accessed 5 Dec 2017 at <a href="https://www.zanon.io/posts/nosql-injection-in-mongodb">https://www.zanon.io/posts/nosql-injection-in-mongodb</a></li>
 			<li>Replace all strings “&lt;” and “&gt;” in a variable with “&amp;lt;” and “&amp;gt;”. Stack Overflow. Accessed 5 Dec 2017 at <a href="https://stackoverflow.com/questions/6093986/replace-all-strings-and-in-a-variable-with-lt-and-gt">https://stackoverflow.com/questions/6093986/replace-all-strings-and-in-a-variable-with-lt-and-gt</a></li>
 			<li>Which characters need to be escaped on HTML? Stack Overflow. Accessed 5 Dec 2017 at <a href="https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html">https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html</a></li>
 		</ol>
