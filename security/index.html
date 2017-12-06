@@ -23,11 +23,20 @@
 		<h2><a name="intro">Introduction</a></h2>
 		<p>This paper presents the security weaknesses in a map website. The product analyzed is a web application that gets the user's current location, sends it to a database for storage and processing, and then displays the locations of other users and nearby landmarks on a map. This web application also calculates the nearest landmark to the user and, upon clicking on the user's icon, displays a line between the user's icon and this landmark. The database used is MongoDB, and the map is made using the Google Maps API.</p>
 		<h2><a name="methods">Methodology</a></h2>
-		<p>First, the client side was examined and toyed with in Google Chrome. Second, the client-side code (i.e. index.html) was examined and analyzed. Lastly, the server code was examined (i.e. index.js) and toyed with using curl on the command line. Throughout this process, online articles were consulted to gain exposure and understanding about web security issues (see <a href="refs">References</a> section).
+		<p>First, the client side sites (Landmark Locator and https://whispering-hollows-86285.herokuapp.com/checkins.json) were examined and toyed with in Google Chrome. Second, the client-side code (index.html) was examined and analyzed. Lastly, the server code was examined (index.js) and toyed with using curl on the command line. Throughout this process, online articles were consulted to gain exposure and understanding about web security issues (see <a href="refs">References</a> section).
 		<h2><a name="abstract">Abstract of Findings</a></h2>
 		<h2><a name="issues">Issues Found</a></h2>
 		<ol start="1">
-			<li>1. Database Injection: "login" Value in /sendLocation
+			<li>1. Insert Inappropriate Query String in /checkins.json
+				<p>On the checkins page, the user can type a query string requesting to see any checkin NOT equal to a particular username. This could result in a data breach, since the user could see the checkins of users - their usernames,  locations, and times visited - that they are not authorized to see. Also, as presented in the video below, a nefarious checkin (e.g., a login that is actually JavaScript - see <a href="XSS">2. Database Injection</a>) could redirect the user to an unwanted place or gather their information and store it in an unwanted place.</p>
+				<p><video src="COMP20-neCheckin.mov" alt="not-equal login shows many checkins, and a nasty checkin redirects to MySpace" controls></video></p>
+				<div class="qstring-severity"><p>This issue is high severity for two reasons: 
+					<ul><li>The user can see other users' data with merely the knowledge of their own username. Also, on many sites, there is only one instance of a given username; thus, if a user searches for anyone but himself, he gets everyone else's checkins because he is the only one with his username.</li>
+					<li>If a previous user did some cross-site scripting and had a checkin value that is actually JavaScript code, this could redirect the current user to a bad site and give them a virus, or somehow extract data from them and save it somewhere.</li></ul>
+				</p></div>
+				<p>The solution is not to allow the user to type '[$ne]' into the query string. Since this web application uses MongoDB, it makes sense to use the module "mongo-sanitize", as described in the screenshot below.</p>
+				<p><img src="COMP20-nePrevent.png" alt="prevent not-equal request with module mongo-sanitize"></p>
+			</li><li><a name="XSS">2. Database Injection: "login" Value in /sendLocation</a>
 				<p>Since index.js does not check that the login is legitimate (e.g., that it contains only alphanumeric characters, or that it is below a certain character length), a user could send JavaScript code as the login. This would then be executed by the page whenever that login should be displayed on the page. In this particular web application, the login executes as JavaScript in /checkins, but not in that checkin's info window in index.html. It likely does not read the login as code in the map because the Google Maps API has safeguards against this for their info windows.</p>
 				<p>To demonstrate this, I added a checkin to MongoDB using curl in the command window. The login field is JavaScript code that redirects to the MySpace homepage.</p>
 				<p><img src="COMP20-curlLogin-before.png" alt="curl redirect to MySpace"/></p>
@@ -36,14 +45,12 @@
 				<p><video src="COMP20-mapNoLogin.mov" alt="map info window without login" controls></video></p>
 				<p>When you visit the /checkins page, however, the site does read the new login as JavaScript, execute it, and thus redirect you to MySpace.</p>
 				<p><video src="COMP20-checkinsRedirect.mov" alt="checkins redirects to MySpace" controls></video></p>
-				<p>This issue is high severity because it would allow a user to redirect other users to a nefarious site, thus giving them viruses or something similarly bad. Besides redirection, other code could be injected to do other bad things, such as collect user information and send it somewhere bad.</p>
+				<p>This issue is high severity because it would allow a user to redirect other users to a nefarious site, thus giving them viruses or something similarly bad. Besides redirection, other code could be injected to do other bad things, such as collect user information and send it to an undesirable place.</p>
 				<p>The solution is to replace special characters with their HTML encoded counterparts (e.g., '&lt;' will become '&amp;lt'). This way, what the user originally typed will be displayed, but it will not be executed as code.</p>
 				<p><img src="COMP20-XSSsolution.png" alt="JS code replaces special characters"/></p>
-			</li><li>2. Non-Legitimate Latitude &amp Longitude
+			</li><li>3. Non-Legitimate Latitude &amp Longitude
 				<p>POST /sendLocation does not check that the user entered a legitimate latitude nor longitude. However, the Google Maps API will display only legitimate coordinates; thus, if the coordinates are not legitimate, the user's position will not appear on the map and an error will ensue.</p>
 				<p>Write what I did here</p>
-			</li><li>3. Insert Inappropriate Query String in /checkins.json
-				<p></p>
 			</li>
 		</ol>
 		<h2><a name="concl">Conclusion</a></h2>
