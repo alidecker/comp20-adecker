@@ -25,6 +25,14 @@
 		<h2><a id="methods">Methodology</a></h2>
 		<p>First, the client side sites (Landmark Locator and https://whispering-hollows-86285.herokuapp.com/checkins.json) were examined and toyed with in Google Chrome. Second, the client-side code (index.html) was examined and analyzed. Lastly, the server code (index.js) was examined and toyed with using curl on the command line. Throughout this process, online articles were consulted to gain exposure and understanding about web security issues (see <a href="#refs">References</a> section).
 		<h2><a id="abstract">Abstract of Findings</a></h2>
+		<p>Overall, this web application has been deemed unsafe for the following reasons (as named in <a href="https://www.owasp.org/index.php/Top_10_2017-Top_10">OWASP's Top 10 of 2017</a>):
+			<div class="severity-list">
+				<ul><li>Injection</li>
+					<li>Cross-Site Scripting (XSS)</li>
+					<li>Broken Access Control</li>
+					<li>Sensitive Data Exposure</li>
+				</ul>
+			</div>
 		<h2><a id="issues">Issues Found</a></h2>
 		<ol start="1">
 			<li>1. Insert Inappropriate Query String in /checkins.json
@@ -69,6 +77,7 @@
 		<ol>
 			<li>NoSQL Injection in MongoDB. Zanon. Accessed 5 Dec 2017 at <a href="https://www.zanon.io/posts/nosql-injection-in-mongodb">https://www.zanon.io/posts/nosql-injection-in-mongodb</a></li>
 			<li>Replace all strings “&lt;” and “&gt;” in a variable with “&amp;lt;” and “&amp;gt;”. Stack Overflow. Accessed 5 Dec 2017 at <a href="https://stackoverflow.com/questions/6093986/replace-all-strings-and-in-a-variable-with-lt-and-gt">https://stackoverflow.com/questions/6093986/replace-all-strings-and-in-a-variable-with-lt-and-gt</a></li>
+			<li>Top 10 2017-Top 10. OWASP. Accessed 6 Dec 2017 at <a href="https://www.owasp.org/index.php/Top_10_2017-Top_10">https://www.owasp.org/index.php/Top_10_2017-Top_10</a></li>
 			<li>Which characters need to be escaped on HTML? Stack Overflow. Accessed 5 Dec 2017 at <a href="https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html">https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html</a></li>
 		</ol>
 	</div>
