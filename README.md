@@ -11,8 +11,8 @@
 
 4. What was the most important thing that you learned in this course? Cite two examples as evidence.
 - How the web works.
--- Now I understand that asynchronous code is important so that stuff doesn't get frozen on the page.
--- Separation of concerns makes a lot more sense to me, now that I know that a web page depends on the communications between a web of files, databases, servers...that all do their particular purposes (hopefully) well and separately so that no one is confused.
+    - Now I understand that asynchronous code is important so that stuff doesn't get frozen on the page.
+    - Separation of concerns makes a lot more sense to me, now that I know that a web page depends on the communications between a web of files, databases, servers...that all do their particular purposes (hopefully) well and separately so that no one is confused.
 
 5. Now that you have finished the course, what topic would you like to delve deeper into?
 - Special UI effects so I can make professional-level UI/UX work.
